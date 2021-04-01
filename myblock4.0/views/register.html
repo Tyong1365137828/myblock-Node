@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>注册</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="vh-100 d-flex flex-column justify-content-center align-items-center bg-secondary">
+    <div class="card w-25">
+        <div class="card-header">
+            <h3 class="card-title">用户注册页面</h3>
+            
+        </div>
+        <div class="card-body">
+            <form action="/u_pre/register" method="POST" class="was-validated" onsubmit="return checkAll()">
+                <div class="form-row mb-4">
+                    <label for="username" class="col-3 text-justify col-form-label text-right">设置账号:</label>
+                    <input type="text" class="form-control col-7" id="username" name="username" minlength="7" maxlength="10" required
+                        placeholder="请填写要注册的用户名">
+                    <!-- <p class="invalid-feedback col-2 col-form-label">请填写</p> -->
+                    <!-- <p id="ver-username" style="color: red; font-size: 6px;" class="invalid-feedback col-2 col-form-label"></p> -->
+                    <p id="inform-username" style="color: red; font-size: 6px;"></p>
+                    <input type="hidden" id="inform-username">
+                </div>
+                <div class="form-row mb-4">
+                    <label for="password" class="col-3 text-justify col-form-label text-right">设置密码:</label>
+                    <input type="password" class="form-control col-7" id="password" name="password" required
+                        placeholder="请设置您的密码">
+                    <p id="inform-password" style="color: red; font-size: 6px;"></p>
+                </div>
+                <div class="form-row mb-4">
+                    <label for="password" class="col-3 text-justify col-form-label text-right">确认密码:</label>
+                    <input type="password" class="form-control col-7" id="repassword" name="repassword" required
+                        placeholder="请设置您的密码">
+                    <p id="inform-repassword" style="color: red; font-size: 6px;"></p>
+                </div>
+                <div class="form-row mb-3">
+                    <input type="submit" class="btn btn-primary w-100  col-7 offset-2" value="注册">
+                    <!-- <input type="button" class="btn btn-primary w-100  col-7 offset-2" onclick="checkAll()" value="测试"> -->
+
+                </div>
+                <div class="form-row">
+                    <div class="text-danger col offset-2"><%= msg %></div>
+                </div>
+            </form>
+        </div>
+        <div class="small text-center card-footer">
+            <a href="/" class="text-secondary card-link">点击此处，返回首页</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        
+        var usernameF = document.getElementById("username").onblur = function(){    //验证账号函数
+            var uname = document.getElementById('username').value;
+
+            if(uname == ''){    //用户名为空
+                document.getElementById('inform-username').style = "color: red; font-size: 10px"
+                document.getElementById('inform-username').innerHTML = '用户名为空';
+                return false
+            } else {
+                document.getElementById('inform-username').style = "color: red; font-size: 10px"
+                document.getElementById("inform-username").innerHTML = '验证中....';
+            
+                setTimeout(function () {
+                    var sCode;
+                    var xhr = new XMLHttpRequest();//创建对象
+
+                    xhr.open('get','/u_pre/register/ver_username?username='+uname);//设置请求行
+            
+                    xhr.onload  = function(){//设置回调函数
+                        if (xhr.readyState == 4) {
+                            if (xhr.status == 200) {
+                                console.log(xhr.responseText);
+                                var data = xhr.responseText;
+
+                                var jsonResponse = JSON.parse(data);//这个里面的数据我们就可以进行处理了
+
+                                sCode = jsonResponse["statusCode"];
+                                console.log(sCode);
+
+                                if(sCode == 1) {
+                                    document.getElementById('inform-username').style = "color: green; font-size: 10px"
+                                    document.getElementById('inform-username').innerHTML = '可以注册';
+                                    document.getElementById('inform-username').value = '可以注册'
+                                } else if (sCode == 0) {
+                                    document.getElementById('inform-username').style = "color: red; font-size: 10px"
+                                    document.getElementById('inform-username').innerHTML = '不可注册!!!';
+                                    document.getElementById('inform-username').value = '不可注册!!!';
+                                }
+                            }
+                        
+                            // document.getElementById('inform-username').innerHTML = 'jsonResponse["msg"]';//清空提示信息
+                        }
+                    }
+                xhr.send(null);//发送请求
+                } , 2000 )
+            }
+        }
+
+        document.getElementById('username').onclick = function(){   //点击账号后会置空信息
+            document.getElementById('inform-username').innerHTML = '';
+        }
+
+        var pwdF = document.getElementById('password').onblur = function() {    //验证密码的函数
+            var pwd = document.getElementById('password').value;
+            console.log('pwd='+pwd);
+            if(pwd != '') { //密码不为空
+                document.getElementById('inform-password').innerHTML = ''
+                return true;
+            } else {
+                document.getElementById('inform-password').innerHTML = '空密码!!!'
+                return false;
+            }
+        }
+        
+        var repwdF = document.getElementById('repassword').onblur = function() {    //验证确认密码的函数
+            var pwd = document.getElementById('password').value;
+            var repwd = document.getElementById('repassword').value;
+            console.log('pwd='+pwd+';repwd='+repwd);
+            if(pwd != repwd ) { //两次密码不一致
+                document.getElementById('inform-repassword').innerHTML = '不一致!!!'
+                return false;
+            } else if(repwd == ''){ //确认密码为空
+                document.getElementById('inform-repassword').innerHTML = '空密码!!!'
+                return false;
+            } else if ( pwd == repwd && repwd != '') {  //确认密码验证通过
+                document.getElementById('inform-repassword').innerHTML = ''
+                return true;
+            }
+        }
+        
+        function checkAll() {
+            var unameV = document.getElementById('inform-username').value;
+            var pwdV = pwdF();
+            var repwdV = repwdF();
+
+            console.log('unameV='+unameV+';pwdV='+pwdV+';repwdF='+repwdV);
+
+            if(unameV =='可以注册' && pwdV && repwdV){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    
+        
+    </script>
+    
+    
+    <%- include('footer.html') -%>

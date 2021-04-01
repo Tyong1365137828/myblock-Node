@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>登录</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="vh-100 d-flex flex-column justify-content-center align-items-center bg-secondary">
+    <div class="card w-25">
+        <div class="card-header">
+            <h3 class="card-title">欢迎登陆</h3>
+        </div>
+        <div class="card-body">
+            <form action="/u_pre/login" method="POST" class="was-validated" onsubmit="return chekLogin()" >
+                <div class="form-row mb-3">
+                    <label for="username" class="col-2 text-justify col-form-label text-right">账号:</label>
+                    <input type="text" class="form-control col-7" id="username" name="username" required
+                        placeholder="请填写账号" value="<%= reg_u.username %>">
+                    <p class="invalid-feedback col-3 col-form-label">请填写账号</p>
+                </div>
+                <div class="form-row mb-3">
+                    <label for="password" class="col-2 text-justify col-form-label text-right">密码:</label>
+                    <input type="password" class="form-control col-7" id="password" name="password" required
+                        placeholder="请填写密码">
+                    <p class="invalid-feedback col-3 col-form-label">请填写密码</p>
+                </div>
+                <div class="form-row mb-3">
+                    <label for="ver" class="col-2 text-justify col-form-label text-right">验证:</label>
+                    <input type="text" class="form-control col-7" id="ver-code" onblur="checkVer()" required placeholder="请输入验证码">
+                    <p id="error-ver" style="color: red; font-size: 6px;">请填写验证码</p>
+                    <br/><br/><canvas id="canvas" style="position: relative; left: 70px;" width="190" height="40"></canvas>
+                </div>
+                <div class="form-row mb-3">
+                    <input type="submit" class="btn btn-primary w-100  col-7 offset-2" value="登录">
+                </div>
+                <div class="form-row">
+                    <div class="text-danger col offset-2"><%= msg %></div><!--登陆失败、退出成功等信息提示-->
+                </div>
+            </form>
+        </div>
+        <div class="small text-center card-footer">
+            <a href="/" class="text-secondary card-link">点击此处，返回首页</a>
+        </div>
+    </div>
+    
+    <%- include('footer.html') -%>

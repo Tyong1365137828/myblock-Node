@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>文章详情页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/img/logo.png" width="30" height="30" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">首页</a>
+                </li>
+
+                <% navs.forEach(nav => { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/article/recoms/<%= nav.id %>"><%= nav.name %></a>
+                </li>
+                <% }) %>
+
+            </ul>
+
+            <!--搜索栏-->
+            <form class="form-inline my-2 my-lg-0 ml-5" method="get" action='/search'>
+                <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="请输入关键词...">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+            </form>
+
+
+            <ul class="navbar-nav ml-auto">
+
+                <% if(user) { %><!--如果user存在-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                        '<%= user.username %>'用户,您好
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/user/index/<%= user.id %>">个人中心</a>
+                        <a class="dropdown-item" href="/u_pre/exit">退出</a>
+                        <a class="dropdown-item" href="mailto:1365137828@qq.com?Subject=反馈主题&body=反馈内容" target="_top">联系站主</a>
+                    </div>
+                </li>               
+                <% } else { %>   <!--否则，即user不存在-->    
+                    <li class="nav-item">
+                        <a href="/u_pre/login" class="nav-link">登录</a>
+                    </li><li class="nav-item">
+                        <a href="/u_pre/register" class="nav-link">注册</a>
+                    </li>
+                <% } %>
+
+
+                <% if( user && user.username == "1365137828" ) { %>      <!--如果username是'1365137828'，即管理员-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                        管理员用户
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/admin/">去后台</a>
+                    </div>
+                </li> 
+                <% } %>
+                
+            </ul>
+        </div>
+    </nav>

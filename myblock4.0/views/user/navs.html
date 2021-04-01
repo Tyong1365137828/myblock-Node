@@ -1,0 +1,29 @@
+<div class="col-2 bg-white border-right nav-left p-0">
+    <div class="row text-center mt-3 px-5">
+        <a href="/user/article/add" class="btn btn-primary rounded-0 col">发表博文</a>
+    </div>
+    <div class="list-group list-group-flush border-top border-bottom mt-3 text-center">
+        <li class="list-group-item list-group-item-action">
+            <a href="/user/index/<%= u.id %>" class="text-decoration-none text-secondary">
+                <i class="iconfont icon-home pr-1"></i>我的信息
+            </a>
+        </li>
+        
+        <li class="list-group-item lists-group-item-action">
+            <a href="/user/article?user_id=<%= u.id %>" class="text-decoration-none text-secondary">
+                <i class="iconfont icon-neirongguanli pr-1"></i>文章管理
+            </a>
+        </li>
+        
+        <li class="list-group-item lists-group-item-action">
+            <a href="/user/logs/index?username=<%= u.username %>" class="text-decoration-none text-secondary">
+                <i class="iconfont icon-log pr-1"></i>我的日志
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action">
+            <a href="/user/account/<%= u.id %>" class="text-decoration-none text-secondary">
+                <i class="iconfont icon-zhanghuguanli pr-1"></i>账户管理
+            </a>
+        </li>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>首页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1658828_vud4w73neg.css">
+    <link rel="stylesheet" href="/admin/css/style.css">
+</head>
+
+<body class="bg-light">
+    
+    <%- include('../header.html') -%>
+
+    <div class="container-fluid vh-100">
+        <div class="row h-100">
+            
+            <%- include('../navs.html') -%>
+            <div class="col-10">
+                <div class="p-3 border mb-3 bg-white">
+                    <h4 class="mb-0">文章管理</h4>
+                
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between">
+                                <h6 class="mb-0 align-self-center">文章列表</h6>
+                            </div>
+                            <div class="card-body">
+                                <form action="/user/article" class="form-inline mb-3" method="get">
+                                    <input type="hidden" name="user_id" value="<%= u.id %>">
+                                    <input type="hidden" name="i" value="<%= pg.index %>" ><!--添加这个隐藏的input是用来提交submit按钮筛选后还在当前页面-->
+                                    <div class="form-group">
+                                        <label for="category">文章类目：</label>
+                                        <select name="category_id" id="category" class="form-control-sm">
+                                            <option value="-1">全部</option>    <!--'-1'时后台会处理为未选中状态-->
+
+                                            <% navs.forEach(nav => { %>     <!--这部分代码表示如果选择的id等于，就选中它-->
+                                            <option value="<%= nav.id %>" <%= cid == nav.id ? 'selected' : '' %> > <%= nav.name %> </option>
+                                            <% }) %>
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group ml-3">
+                                        <label for="hot">热门：</label>
+                                        <select name="hot" id="hot" class="form-control-sm">
+                                            <option value="-1">全部</option><!--'-1'时后台会处理为未选中状态-->
+                                            <option value="1" <%= h == 1 ? 'selected' : '' %> >热门</option><!--后台传来的参数等于1<即热门>，就选中此热门-->
+                                            <option value="0" <%= h == 2 ? 'selected' : '' %> >非热门</option><!--后台传来的参数等于0<即非热门>，就选中此非热门-->
+                                        </select>
+                                    </div>
+                                    <div class="from-group ml-3">
+                                        <input type="submit" value="筛选" class="btn btn-primary btn-sm">
+                                    </div>
+                                    <div class="form-group ml-auto">
+                                        <a href="/user/article/add" class="btn btn-danger btn-sm">发表博文</a>
+                                    </div>
+                                </form>
+
+                                <table class="table table-hover text-center">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th>ID</th> -->
+                                            <th>标题</th>
+                                            <th>发布时间</th>
+                                            <th>缩略图</th>
+                                            <th>是否热门</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <% pg.list.forEach(a => { %>
+                                            <tr>
+                                            
+                                            <!-- <th><%= a.id %></th> -->
+                                            <td><a href="/user/article/show/<%= a.id %>" target="_blank" style="color: black;"><%= a.title %></a></td>
+                                            <td><%= a.time.toLocaleString() %></td>
+                                            <td>
+
+                                                <% if(a.thumbnail) { %>
+                                                <i class="iconfont icon-photo" data-toggle="popover"
+                                                    data-content="<img src='<%= a.thumbnail %>' width='200'>"></i>
+                                                <% } %>
+
+                                            </td>
+
+                                            <td><%= a.hot  == 1 ? '是' : '否'  %></td>
+                                            
+                                            <td>
+                                                <a href="/user/article/edit/<%= a.id %>/<%= a.title %>" class="btn btn-link text-danger" title="编辑"><i
+                                                        class="iconfont icon-bianji"></i>编辑</a>
+                                                <button onclick="del( '<%= a.id %>' , '<%= a.title %>' )" class="btn btn-link text-danger"
+                                                    title="删除"><i class="iconfont icon-delete"></i>删除</button>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+
+                                    </tbody>
+                                </table>
+                                <nav class="d-flex justify-content-between border-top pt-3 px-3">
+                                    <div class="align-self-center">共 <%= pg.count %> 条 / 共 <%= pg.total %> 页 / 第 <%= pg.index %> 页</div>
+                                    <ul class="pagination mb-0">
+                                        
+                                        <% if (pg.index != 1) { %><!--如果当前页大于1，即可以使用上一页-->
+                                        <li class="page-item"><a class="page-link" href="/user/article?user_id=<%= u.id %>&i=<%= pg.index-1 %>&category_id=<%= cid %>&hot=<%= h %>">上一页</a></li>
+                                        <% } %>
+
+                                        <% for( let ind = 1 ; ind <= pg.total ; ind++ ) { %>
+                                        <li class="page-item"><a class="page-link" href="/user/article?user_id=<%= u.id %>&i=<%= ind %>&category_id=<%= cid %>&hot=<%= h %>"><%= ind %></a></li>
+                                        <% } %>
+
+                                        <% if (pg.index != pg.total) { %><!--如果当前页小于总页数，即可以使用下一页-->
+                                        <li class="page-item"><a class="page-link" href="/user/article?user_id=<%= u.id %>&i=<%= parseInt(pg.index)+1 %>&category_id=<%= cid %>&hot=<%= h %>">下一页</a></li>
+                                        <% } %>                                                               <!--这样子就会把它当成数字来相加，而不是当作字符串拼接-->
+
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.6/holder.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.5.12/dist/g2.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.2/dist/data-set.min.js"></script>
+    <script src="/admin/js/public.js"></script>
+
+    <script>
+        function sethot(id , hot , atitle ) {                     //hot存在即，就为0
+            $.get('/admin/article/setHot' , { id: id , hot: hot ? 1 : 0 } , function(response) {    //ajax异步请求
+                if (response.statusCode == 1 && hot==1) {
+                    showToasts( '热门推荐成功' , '您已成功把文章《'+atitle+'》推荐为热门')//直接调用/admin/js/public.js内部的showToasts函数<弹出文本框>
+                } else if (response.statusCode == 1 && hot==0) {  //状态码显示成功，但是
+                    showToasts( '取消热门推荐成功' , '您已成功把热门文章《'+atitle+'》取消推荐')
+                } else {
+                    showToasts( '更改文章推荐失败' , '设置文章《'+atitle+'》失败，具体原因请参考控制台')
+                }
+            })
+        }
+
+        function del(str_id , str_title) {  //删除文章
+            if(confirm('确认删除吗？')){    //增加确认框
+                $.getJSON('/user/article/del' , {id: parseInt(str_id) , title: str_title} , function(response) {    //ajax异步请求
+                    if(response.statusCode == 1){   //状态码为1，即删除成功
+                        showToasts('删除成功' , '您已成功把文章删除')
+                        setTimeout(function(){
+                            location.reload()  //重新加载当前页面
+                        },2000) //延时2秒
+                    } else {
+                        showToasts('删除失败' , '您文章删除失败')
+                    }
+            })
+            }
+            
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<%- include('header.html') -%><!--导入公共部分-->
+    <div class="container mt-4">
+        <nav>
+            <ol class="breadcrumb bg-white">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item"><a href="/article/recoms/<%= rec_detail.category_id %>"><%= rec_detail.name %></a></li>
+                <li class="breadcrumb-item active"><%= rec_detail.title %></li>
+            </ol>
+        </nav>
+        <div class="card">
+            <div class="card-header bg-white">
+                <h3 class="card-title m-0"><%= rec_detail.title %></h3>
+                <p class="text-muted small mt-2 m-0">
+                    <span class="mr-3">发表时间：<%= rec_detail.time.toLocaleString() %></span>
+                    <span class="mr-1">点击：<%= rec_detail.hits %></span>
+                </p>
+            </div>                  <!--使用'='会表示按照字符输出，不会解析html元素，那么就是用'-'，它会解析html元素-->
+            <div class="card-body"><%- rec_detail.content %></div>
+            <div class="card-footer bg-white border-0">
+
+                <% tabs_det.forEach(tab => { %>
+                <span class="badge badge-pill"><%= tab.name %></span>
+                <% }) %>
+
+            </div>
+        </div>
+        <nav>
+            <ul class="pagination mt-3">
+                <% if(prev) { %>    <!--即如果存在上篇文章，才显示上篇文章-->
+                <li class="page-item">
+                    <a class="page-link" href="/article/<%= prev.id %>">上一篇：<%= prev.title %></a>
+                </li>
+                <% } %>
+
+                <% if(next) { %>    <!--即如果存在下篇文章，才显示上篇文章-->
+                <li class="page-item ml-auto">
+                    <a class="page-link" href="/article/<%= next.id %>">下一篇：<%= next.title %>></a>
+                </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+<%- include('footer.html') -%>

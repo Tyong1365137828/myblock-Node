@@ -1,0 +1,29 @@
+<%- include('header.html') -%><!--导入公共部分-->
+
+    <div class="container mt-5">
+        <h2 class="mb-4">搜索结果（搜索词：<%= kw %> ）</h2>
+        <div class="row row-cols-4">
+
+            <% search_res.forEach( rec => { %>
+            <div class="col my-3">
+                <div class="card h-100">
+                    <img src="<%= rec.thumbnail %>" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= rec.title %></h5>
+                        <p class="card-text"><%= rec.content.replace(/<[^>]+>/g,'').substring(0,100) %></p>
+                        <a href="/article/<%= rec.id %>" class="stretched-link"></a>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="card-body">      
+                            <p class="card-text"><small class="text-muted">编写时间:<%= rec.time.toLocaleString() %></small></p>
+                            <p class="card-text"><small class="text-muted">作者:<%= rec.name %></small></p>
+                        </div>
+                        <a href="/article/<%= rec.id %>" class="btn btn-primary float-right stretched-link">阅读</a>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+          
+        </div>
+    </div>
+    <%- include('footer.html') -%>

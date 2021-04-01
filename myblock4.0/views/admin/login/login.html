@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>管理员登录</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="vh-100 d-flex flex-column justify-content-center align-items-center bg-secondary">
+    <div class="card w-25">
+        <div class="card-header">
+            <h3 class="card-title">管理员后台登陆处</h3>
+        </div>
+        <div class="card-body">
+            <form action="/a_pre/login" method="POST" class="was-validated">
+                <div class="form-row mb-3">
+                    <label for="username" class="col-2 text-justify col-form-label text-right">账号：</label>
+                    <input type="text" class="form-control col-7" id="username" name="account" required
+                        placeholder="请填写root账号">
+                    <p class="invalid-feedback col-3 col-form-label">root account</p>
+                </div>
+                <div class="form-row mb-3">
+                    <label for="password" class="col-2 text-justify col-form-label text-right">密码：</label>
+                    <input type="password" class="form-control col-7" id="password" name="password" required
+                        placeholder="请填写root密码">
+                    <p class="invalid-feedback col-3 col-form-label">root password</p>
+                </div>
+                <div class="form-row mb-3">
+                    <input type="submit" class="btn btn-primary w-100  col-7 offset-2" value="登录">
+                </div>
+                <div class="form-row">
+                    <div class="text-danger col offset-2"><%= msg %></div>
+                </div>
+            </form>
+        </div>
+        <div class="small text-center card-footer">
+            <a href="/" class="text-secondary card-link">点击此处，返回首页</a>
+        </div>
+    </div>
+    
+    <%- include('footer.html') -%>

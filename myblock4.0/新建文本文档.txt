@@ -1,0 +1,11 @@
+<% if( user.username == "1365137828" ) { %>      <!--如果username是'1365137828'，即管理员-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">
+                        管理员用户
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/user/exit">退出</a>
+                        <a class="dropdown-item" href="/user/exit">去后台</a>
+                    </div>
+                </li> 
+                <% } %>

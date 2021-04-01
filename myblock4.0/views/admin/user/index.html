@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>首页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1658828_vud4w73neg.css">
+    <link rel="stylesheet" href="/admin/css/style.css">
+</head>
+
+<body class="bg-light">
+    
+    <%- include('../header.html') -%>
+
+    <div class="container-fluid vh-100">
+        <div class="row h-100">
+            
+            <%- include('../navs.html') -%>
+            <div class="col-10">
+                <div class="p-3 border mb-3 bg-white">
+                    <h4 class="mb-0">查看用户</h4>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between">
+                                <h6 class="mb-0 align-self-center">用户列表</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>用户名</th>
+                                            <th>密码</th>
+                                            <th>姓名</th>
+                                            <th>黑名单</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <% pg.list.forEach(l => { %>
+                                        <tr>
+                                            <td><%= l.id %></td>
+                                            <td><%= l.username %></td>
+                                            <td><%= l.password %></td>
+                                            <td><%= l.name %></td>
+                                            <td>
+                                                <div class="custom-control custom-switch">                                                                                                                      <!--如果后台传来这个文章的hot存在就checked<选中>，反之就不选中-->
+                                                    <input type="checkbox" class="custom-control-input" value="<%= l.id %>" id="lock<%= l.id %>" onchange="setlock(this.value , this.checked , '<%= l.username %>' )" <%= l.lock==1 ?'checked':'' %>  >
+                                                    <label class="custom-control-label" for="lock<%= l.id %>"></label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/user/edit/<%= l.username %>" class="btn btn-link text-danger" title="编辑"><i
+                                                    class="iconfont icon-bianji"></i>编辑</a>
+                                                <button onclick="del( '<%= l.username %>' )" class="btn btn-link text-danger"
+                                                    title="删除"><i class="iconfont icon-delete"></i>删除</button>
+                                            </td>
+
+                                        </tr>
+                                        <% }) %>
+
+                                    </tbody>
+                                </table>
+                                
+                                <nav class="d-flex justify-content-between border-top pt-3 px-3">
+                                    <div class="align-self-center">共 <%= pg.count %> 条 / 共 <%= pg.total %> 页 / 第 <%= pg.index %> 页</div>
+                                    <ul class="pagination mb-0">
+
+                                        <% if (pg.index != 1) { %><!--如果当前页大于1，即可以使用上一页-->
+                                        <li class="page-item"><a class="page-link" href="/admin/user?i=<%= pg.index-1 %>">上一页</a></li>
+                                        <% } %>
+
+                                        <% for( let ind = 1 ; ind <= pg.total ; ind++ ) { %>
+                                            <% if(ind <= 3) { %>
+                                        <li class="page-item"><a class="page-link" href="/admin/user?i=<%= ind %>"><%= ind %></a></li>
+                                            <% } %>
+                                        <% } %>
+                                        <% if( pg.total > 4 ) { %>
+                                        ......
+                                        <% } %>
+
+                                        <% if (pg.index != pg.total) { %><!--如果当前页小于总页数，即可以使用下一页-->
+                                        <li class="page-item"><a class="page-link" href="/admin/user?i=<%= parseInt(pg.index)+1 %>">下一页</a></li>
+                                        <% } %>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.6/holder.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.5.12/dist/g2.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.2/dist/data-set.min.js"></script>
+    <script src="/admin/js/public.js"></script>
+
+    <script>
+        function setlock(id , lockflag ,username ) {                 
+            $.get('/admin/user/setLock' , { id: id , lock: lockflag ? 1 : 2 , username: username } , function(response) {    //ajax异步请求
+                if (response.statusCode == 1 && lockflag==1) {
+                    showToasts( '用户锁定成功' , '您已成功把用户<'+username+'>账户锁定')//直接调用/admin/js/public.js内部的showToasts函数<弹出文本框>
+                } else if (response.statusCode == 1 && lockflag==0) {  //状态码显示成功，但是
+                    showToasts( '取消用户锁定成功' , '您已成功把用户<'+username+'>取消锁定')
+                } else {
+                    showToasts( '更改用户锁失败' , '设置用户锁<'+username+'>失败，具体原因请参考控制台')
+                }
+            })
+        }
+
+
+        function del(username) {  //删除文章
+            if(confirm('确认删除吗？')){    //增加确认框
+                $.getJSON('/admin/user/del' , {username: username} , function(response) {    //ajax异步请求
+                    if(response.statusCode == 1){   //状态码为1，即删除成功
+                        showToasts('删除成功' , '您已成功把用户'+username+'删除')
+                        setTimeout(function(){
+                            location.reload()  //重新加载当前页面
+                        },2000) //延时2秒
+                    } else {
+                        showToasts('删除失败' , '您删除用户'+username+'失败')
+                    }
+            })
+            }
+            
+        }
+
+    </script>
+
+</body>
+
+</html>
